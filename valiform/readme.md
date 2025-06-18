@@ -1,7 +1,5 @@
 # Valiform (Validation + format)
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/goutham80808/valiform)](https://goreportcard.com/report/github.com/goutham80808/valiform)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **Valiform** (Validate + Format) is a powerful and flexible command-line tool for validating structured data files against a user-defined set of rules. After validation, it intelligently separates valid and invalid data, writing the clean data to a new file and providing a detailed report of all errors.
 
