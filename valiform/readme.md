@@ -95,7 +95,7 @@ fields:
 Execute the tool, pointing it to your configuration and data files.
 
 ```bash
-./valiform --config rules.yaml --input data.csv --output valid_data.json
+  go run ./cmd/valiform -c rules.yaml -i data.csv -o valid_grades.json
 ```
 
 **4. Check the Results:**
