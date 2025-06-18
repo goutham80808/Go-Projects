@@ -1,0 +1,90 @@
+     [ User in Terminal ]
+            |
+            | Executes command: `go run ./cmd/valiform -c rules.yaml -i data.csv`
+            V
++---------------------------+
+| 1. main.go (Cobra CLI)    |  <-- The "Conductor"
+|   - Parses flags:         |
+|     - configFile = "rules.yaml"
+|     - inputFile = "data.csv"
+|     - outputFile = "valid_grades.json"
++---------------------------+
+            |
+            | Calls config.Load(configFile)
+            V
++---------------------------+
+| 2. internal/config        |
+|   - Reads `rules.yaml` file.
+|   - Parses YAML into the `RuleSet` Go struct.
++---------------------------+
+            |
+            | Returns the `RuleSet` struct back to main.go
+            V
++---------------------------+
+| main.go                   |
+|   - Now holds the loaded rules.
+|   - Checks `rules.FileType` ("csv").
+|   - Calls reader.ReadCSV(inputFile)
++---------------------------+
+            |
+            V
++---------------------------+
+| 3. internal/reader        |
+|   - Opens and reads `data.csv`.
+|   - Parses header and rows.
+|   - Converts each row into a `validator.Record` (a map).
+|   - Returns a slice of all Records: `[]validator.Record`
++---------------------------+
+            |
+            | Returns the slice of records back to main.go
+            V
++-------------------------------------------------------------+
+| 4. main.go: The Validation Loop                             |
+|    - Creates two empty lists:                               |
+|      - `validRecords`                                       |
+|      - `validationErrors`                                   |
+|    - FOR each `record` in the slice of records:             |
++-------------------------------------------------------------+
+      |
+      | Calls validator.ValidateRecord(record, rules, row_number)
+      V
+    +--------------------------------+
+    | 5. internal/validator          |
+    |    - Checks the `record` against each rule in `RuleSet`.
+    |    - Is it required? Does it match the regex? Is it within min/max?
+    +--------------------------------+
+      |
+      | Returns a list of errors found for that ONE record.
+      V
+    +--------------------------------+
+    | main.go: Decision Point        |
+    |    - IF the list of errors is empty:
+    |      - Add the `record` to the `validRecords` list.
+    |    - ELSE:
+    |      - Add the errors to the `validationErrors` list.
+    +--------------------------------+
+      |
+      | (Loop continues for the next record)
+      V
++-------------------------------------------------------------+
+| 6. main.go: After the Loop is Finished                      |
++-------------------------------------------------------------+
+    |                                   |
+    | IF `validRecords` is not empty:   | IF `validationErrors` is not empty:
+    V                                   V
++---------------------------+         +-------------------------------+
+| 7. Calls writer.WriteJSON |         | 8. Prints each error          |
+|    with `validRecords`.   |         |    from `validationErrors`.   |
+|    - Formats to pretty JSON.|         +-------------------------------+
+|    - Writes to `outputFile`.|                     |
++---------------------------+                     |
+    |                                             |
+    V                                             V
+[ valid_grades.json file ]              [ Errors shown in Terminal (stderr) ]
+
+
++---------------------------+
+| 9. Program Exits          |
+|    - Exits with code 0 if no errors were found.
+|    - Exits with code 1 if any validation errors occurred.
++---------------------------+

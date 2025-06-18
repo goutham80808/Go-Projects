@@ -1,4 +1,4 @@
-# Valiform
+# Valiform (Validation + format)
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/goutham80808/valiform)](https://goreportcard.com/report/github.com/goutham80808/valiform)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
