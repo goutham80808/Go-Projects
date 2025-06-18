@@ -1,0 +1,18 @@
+file_type: "csv"
+has_header: true
+fields:
+  - name: "StudentID"
+    type: "string"
+    rules:
+      required: true
+      regex: "^S[a-zA-Z0-9]{5}$"
+  - name: "FirstName"
+    type: "string"
+    rules:
+      required: true
+  - name: "Grade"
+    type: "integer"
+    rules:
+      required: true
+      min: 0
+      max: 100
